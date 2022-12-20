@@ -1,19 +1,16 @@
 <script>
 	import Title from "./Title.svelte";
-	let first_answer = "今若者の間で話題の神社の特徴は?";
-	let middle_answers = [
-		"神主がひろゆきを論破した",
-		"論破大好きキッズが神社でアルバイトを始めました。どうしてでしょうか。",
-		"過激派キリスト教徒から仏教徒を減らすアルバイトを受けたから",
-		"「お前、最近宗教色強くね?」何があった?",
-	];
-	let last_answer = "パソコンのマウスが水晶でパソコンのロゴが何かの札";
 	let flg = false;
 	let isTitle = false;
+	let answerStrings = JSON.parse(localStorage.getItem("answers"));
+	let first_answer = answerStrings[0];
+	let middle_answers = answerStrings.slice(1, answerStrings.length - 1);
+	let last_answer = answerStrings[answerStrings.length - 1];
 	function buttonFlg() {
 		flg = true;
 	}
 	function backTitle() {
+		localStorage.removeItem("answers");
 		isTitle = true;
 	}
 </script>

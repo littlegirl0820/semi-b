@@ -6,17 +6,31 @@
 		"以下の回答から大喜利のお題を予想してください。",
 	];
 	let isResult = false;
+	let caution = false;
 	let i = 1;
 	let turn = 1;
 	let question = "こんな授業はいやだ。";
 	let answer = "";
 	let turnMax = 6;
+	let answerStrings = [];
 	function sendAnswer() {
-		if (turn === turnMax) {
-			isResult = true;
+		if (answer === "") {
+			caution = true;
+		} else {
+			question = answer;
+			addStrings(answer);
+			answer = "";
+			caution = false;
+			if (turn === turnMax) {
+				isResult = true;
+				localStorage.setItem("answers", JSON.stringify(answerStrings));
+			}
+			turn += 1;
+			i += 1;
 		}
-		turn += 1;
-		i += 1;
+	}
+	function addStrings(str) {
+		answerStrings.push(str);
 	}
 </script>
 
@@ -30,10 +44,15 @@
 		{:else}
 			<h2>{type[2]}</h2>
 		{/if}
-		<h2>『{question}』</h2>
+		{#if turn >= 2}
+			<h2>『{question}』</h2>
+		{/if}
 		<div class="centering">
 			<input placeholder="入力欄" bind:value={answer} />
 			<button on:click={sendAnswer}>決定</button>
+			{#if caution}
+				<h3>入力してね</h3>
+			{/if}
 		</div>
 	{:else}
 		<Result />
@@ -46,6 +65,10 @@
 	}
 	h2 {
 		text-align: center;
+	}
+	h3 {
+		text-align: center;
+		color: crimson;
 	}
 	.centering {
 		text-align: center;
