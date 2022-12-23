@@ -37,12 +37,12 @@
 <main>
 	{#if !isResult}
 		<h1>TURN {turn}</h1>
-		{#if i <= 2}
-			<h2>{type[i - 1]}</h2>
-		{:else if i % 2 == 0}
-			<h2>{type[1]}</h2>
+		{#if i === 1}
+			<h2><b>大喜利のお題</b>を入力してください。</h2>
+		{:else if i % 2 === 0}
+			<h2>以下のお題に対して<b>回答</b>してください。</h2>
 		{:else}
-			<h2>{type[2]}</h2>
+			<h2>以下の回答から<b>大喜利のお題</b>を予想してください。</h2>
 		{/if}
 		{#if turn >= 2}
 			<h2>『{question}』</h2>
@@ -51,7 +51,7 @@
 			<input placeholder="入力欄" bind:value={answer} />
 			<button on:click={sendAnswer}>決定</button>
 			{#if caution}
-				<h3>入力してね</h3>
+				<h3>入力せんかいシバくぞ</h3>
 			{/if}
 		</div>
 	{:else}
@@ -64,6 +64,7 @@
 		text-align: center;
 	}
 	h2 {
+		font-weight: normal;
 		text-align: center;
 	}
 	h3 {

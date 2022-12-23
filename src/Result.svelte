@@ -11,6 +11,7 @@
 	}
 	function backTitle() {
 		localStorage.removeItem("answers");
+		localStorage.removeItem("Turn");
 		isTitle = true;
 	}
 </script>
