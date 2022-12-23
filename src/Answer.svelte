@@ -11,7 +11,7 @@
 	let turn = 1;
 	let question = "こんな授業はいやだ。";
 	let answer = "";
-	let turnMax = 6;
+	let turnMax = Number(localStorage.getItem("Turn"));
 	let answerStrings = [];
 	function sendAnswer() {
 		if (answer === "") {

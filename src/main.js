@@ -1,10 +1,7 @@
-import App from './App.svelte';
+import Title from './Title.svelte';
 
-const app = new App({
-	target: document.body,
-	props: {
-		name: 'world'
-	}
+const title = new Title({
+	target: document.body
 });
 
-export default app;
+export default title;
