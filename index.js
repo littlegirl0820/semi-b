@@ -11,19 +11,27 @@ server.listen(3000, () => {
   console.log('listening on *:3000');
 });
 
+var members = []
+var started = false
+
 io.on('connection', (socket) => {
   console.log('a user connected');
 
   socket.on('join', (json) => {
-    // TODO: ユーザ名の重複、ゲーム中かどうかの検査
-    result = {}
-    socket.emit(result)
+    result = "NG";
+    if (!started && !members.includes(json["username"])) {
+      result = "OK";
+      members.push(json["username"]);
+    }
+    socket.emit(
+      { "result": result }
+    );
   });
 
   socket.on('members', (json) => {
-    // TODO: メンバーの管理
-    members = {}
-    socket.emit(members)
+    socket.emit(
+      { "members": members.map((username) => { return {"username": username}; }) }
+    );
   })
 
   // ...
