@@ -1,17 +1,21 @@
 <script>
 	import Answer from "./Answer.svelte";
+	import WaitingRoom from "./WaitingRoom.svelte";
 	let userName = "";
 	let isAns = false;
+	let isWait = false;
 	let turn = "6";
 	function playLocal() {
 		isAns = true;
 		localStorage.setItem("Turn", turn);
 	}
-	function playOnline() {}
+	function playOnline() {
+		isWait = true;
+	}
 </script>
 
 <main>
-	{#if !isAns}
+	{#if !isAns&&!isWait}
 		<a
 			href="http://abehiroshi.la.coocan.jp/"
 			target="_blank"
@@ -32,8 +36,10 @@
 			<button on:click={playOnline} class="buttonOnline">オンラインでプレイ</button>
 			<input placeholder="ユーザ名" bind:value={userName} class="textb"/><br />
 		</div>
-	{:else}
+	{:else if isAns}
 		<Answer />
+	{:else}
+		<WaitingRoom />
 	{/if}
 </main>
 

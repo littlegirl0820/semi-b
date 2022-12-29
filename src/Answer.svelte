@@ -38,11 +38,11 @@
 	{#if !isResult}
 		<h1>TURN {turn}</h1>
 		{#if i === 1}
-			<h2><b>大喜利のお題</b>を入力してください。</h2>
+			<h2><span style="font-size:150%;"><b>大喜利のお題</b></span>を入力してください。</h2>
 		{:else if i % 2 === 0}
-			<h2>以下のお題に対して<b>回答</b>してください。</h2>
+			<h2>以下のお題に対して<span style="font-size:150%;"><b>回答</b></span>してください。</h2>
 		{:else}
-			<h2>以下の回答から<b>大喜利のお題</b>を予想してください。</h2>
+			<h2>以下の回答から<span style="font-size:150%;"><b>大喜利のお題</b></span>を予想してください。</h2>
 		{/if}
 		{#if turn >= 2}
 			{#if turn%2 == 0}
