@@ -1,16 +1,15 @@
 <script>
-	let type = ["大喜利のお題を入力してください。","以下のお題に対して回答してください。","以下の回答から大喜利のお題を予想してください。"];
-	let i = 1;
 	let turn = 1;
-	let question = "こんな授業はいやだ。";
-	let answer = "";
 </script>
 
 <main>
-	<h1>TURN {turn}</h1>
 	{#if turn%2==1}
-    	<h2>他の人がお題作成中です。</h2>
-		<div class="wrapper">
+        <div class="toparea">
+            <h1>TURN {turn}</h1>
+    	    <h2>他の人がお題作成中です。</h2>
+        </div>
+		<div class="downarea">
+        <div class="wrapper">
         	<div class="circle"></div>
         	<div class="circle"></div>
         	<div class="circle"></div>
@@ -18,8 +17,13 @@
         	<div class="shadow"></div>
         	<div class="shadow"></div>
     	</div>
+        </div>
 	{:else}
-		<h2>他の人が回答作成中です。</h2>
+        <div class="toparea">
+	        <h1>TURN {turn}</h1>
+		    <h2>他の人が回答作成中です。</h2>
+        </div>
+        <div class="downarea">
 		<div class="wrapper">
         	<div class="circle2"></div>
         	<div class="circle2"></div>
@@ -28,6 +32,7 @@
         	<div class="shadow"></div>
         	<div class="shadow"></div>
     	</div>
+        </div>
 	{/if}
 </main>
 
@@ -40,14 +45,35 @@ h2{
 	text-align:center;
 }
 
+.toparea{
+	text-align: center;
+	position: absolute;
+	top: 30%;
+	left: 50%;
+	transform: translateY(-50%) translateX(-50%);
+    -webkit-transform: translateY(-50%) translateX(-50%);
+	width:95%;
+}
+
+.downarea {
+	text-align: center;
+	vertical-align: bottom;
+	position: absolute;
+  	top: 60%;
+  	left: 50%;
+  	transform: translateX(-50%);
+  	-webkit-transform: translateX(-50%);
+	width:95%;
+}
+
 /**以下、サイトより引用(https://photopizza.design/css_loading/)**/
 .wrapper{
     width:200px;
     height:60px;
     position: absolute;
-    left:50%;
     top:50%;
-    transform: translate(-50%, -50%);
+    left:50%;
+    transform: translate(-50%,-50%);
 }
 .circle{
     width:20px;

@@ -27,9 +27,7 @@
 h1{
 	text-align:center;
 }
-h2{
-	text-align:center;
-}
+
 .centering{
 	text-align:center;
 }
@@ -50,7 +48,6 @@ h2{
 	border-radius: 0.3em;
   	box-sizing: border-box;
 	text-align:center;
-	font-size: 20px;
 }
 
 .balloonB p {
@@ -69,6 +66,7 @@ h2{
 	border: solid 2px mediumseagreen;
 	border-radius: 0.3em;
 	transition: 0.4s;
+	margin-bottom: 3em;
 }
 
 .buttonG:hover {

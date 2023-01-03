@@ -24,13 +24,13 @@
 				<button on:click={buttonFlg} class="buttonG">結果オープン</button>
 			</div>
 		{:else}
-			<h2>最初のお題</h2><br/>
+			<h2>最初の<span style="font-size:120%; font-weight: bold; color:salmon">お題</span></h2><br/>
 			<div class="balloonR">
 				<h2>『{first_answer}』</h2>
 			</div>
 			<div class="centering">
 				<details>
-					<summary>途中経過</summary>
+					<summary>伝言過程</summary>
 					{#each middle_answers as answer,i}
 						{#if i%2==1}
 							<div class="balloonPR">
@@ -44,7 +44,7 @@
 					{/each}
 				</details>
 			</div>
-			<h2>最後の回答</h2><br/>
+			<h2>最後の<span style="font-size:120%; font-weight: bold; color:cornflowerblue">回答</span></h2><br/>
 			<div class="balloonB">
 				<h2>「{last_answer}」</h2>
 			</div>
@@ -66,6 +66,7 @@
 	}
 	.centering {
 		text-align: center;
+		vertical-align: top;
 	}
 
 	.balloonR {
@@ -78,7 +79,7 @@
   		margin: 1.5em 0;
   		padding: 0.3em 1em;
   		min-width: 3em;
-  		max-width: 100%;
+  		max-width: 95%;
   		color: black;
   		background: salmon;
   		border: solid 3px salmon;
@@ -122,11 +123,12 @@
   		margin: 1.5em 0;
   		padding: 0.3em 1em;
   		min-width: 3em;
-  		max-width: 100%;
+  		max-width: 95%;
   		color: white;
   		background: cornflowerblue;
   		border: solid 3px cornflowerblue;
   		box-sizing: border-box;
+		vertical-align: top;
 	}
 
 	.balloonB:before {
@@ -162,7 +164,7 @@
   		margin: 0.5em 0;
   		padding: 0.3em 1em;
   		min-width: 3em;
-  		max-width: 100%;
+  		max-width: 90%;
   		color: black;
   		background: salmon;
   		border: solid 3px salmon;
@@ -180,7 +182,7 @@
   		margin: 0.5em 0;
   		padding: 0.3em 1em;
   		min-width: 3em;
-  		max-width: 100%;
+  		max-width: 90%;
   		color: white;
   		background: cornflowerblue;
   		border: solid 3px cornflowerblue;
@@ -198,6 +200,7 @@
 		background-color: white;
 		display: inline-block;
 		padding: 0.3em 1em;
+		margin-bottom: 3em;
 		text-decoration: none;
 		color: mediumseagreen;
 		border: solid 2px mediumseagreen;

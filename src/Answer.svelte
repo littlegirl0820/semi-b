@@ -36,15 +36,17 @@
 
 <main>
 	{#if !isResult}
+		<div class="toparea">
 		<h1>TURN {turn}</h1>
 		{#if i === 1}
-			<h2><span style="font-size:150%;"><b>大喜利のお題</b></span>を入力してください。</h2>
+			<h2><span style="font-size:120%; font-weight: bold; color:salmon">大喜利のお題</span>を入力してください。</h2>
 		{:else if i % 2 === 0}
-			<h2>以下のお題に対して<span style="font-size:150%;"><b>回答</b></span>してください。</h2>
+			<h2>以下の大喜利のお題に対する<span style="font-size:120%; font-weight: bold; color:cornflowerblue">回答</span>を入力してください。</h2>
 		{:else}
-			<h2>以下の回答から<span style="font-size:150%;"><b>大喜利のお題</b></span>を予想してください。</h2>
+			<h2>以下の回答にふさわしい<span style="font-size:120%; font-weight: bold; color:salmon">大喜利のお題</span>を入力してください。</h2>
 		{/if}
 		{#if turn >= 2}
+			<br/>
 			{#if turn%2 == 0}
 				<div class="balloonR">
 					<h2>『{question}』</h2>
@@ -55,7 +57,8 @@
 				</div>
 			{/if}
 		{/if}
-		<div class="centering">
+		</div>
+		<div class="downarea">
 			{#if turn%2 == 1}
 				<input placeholder="お題を入力" bind:value={answer} class="textb"/>
 				<button on:click={sendAnswer} class="buttonR">決定</button>
@@ -84,25 +87,44 @@
 		text-align: center;
 		color: crimson;
 	}
-	.centering {
+
+	.toparea{
 		text-align: center;
+		position: absolute;
+		vertical-align: top;
+  		top: 40%;
+  		left: 50%;
+  		transform: translateY(-50%) translateX(-50%);
+  		-webkit-transform: translateY(-50%) translateX(-50%);
+		width:95%;
+	}
+
+	.downarea {
+		text-align: center;
+		vertical-align: bottom;
+		position: absolute;
+  		top: 65%;
+  		left: 50%;
+  		transform: translateX(-50%);
+  		-webkit-transform: translateX(-50%);
+		width:95%;
 	}
 
 	.balloonR {
   		position: relative;
-		left: 50%;
-    	transform: translate(-50%, -50%);
-    	-webkit-transform: translate(-50%, -50%);
-    	-ms-transform: translate(-50%, -50%);
+    	transform: translateY(-50%);
+    	-webkit-transform: translateY(-50%);
+    	-ms-transform: translateY(-50%);
   		display: inline-block;
   		margin: 1.5em 0;
   		padding: 0.3em 1em;
   		min-width: 3em;
-  		max-width: 100%;
+  		max-width: 95%;
   		color: black;
   		background: salmon;
   		border: solid 3px salmon;
   		box-sizing: border-box;
+		overflow-wrap:break-word;
 	}
 
 	.balloonR:before {
@@ -134,19 +156,19 @@
 	
 	.balloonB {
   		position: relative;
-		left: 50%;
-    	transform: translate(-50%, -50%);
-    	-webkit-transform: translate(-50%, -50%);
-    	-ms-transform: translate(-50%, -50%);
+    	transform: translateY(-50%);
+    	-webkit-transform: translateY(-50%);
+    	-ms-transform: translateY(-50%);
   		display: inline-block;
   		margin: 1.5em 0;
   		padding: 0.3em 1em;
   		min-width: 3em;
-  		max-width: 100%;
+  		max-width: 95%;
   		color: white;
   		background: cornflowerblue;
   		border: solid 3px cornflowerblue;
   		box-sizing: border-box;
+		overflow-wrap:break-word;
 	}
 
 	.balloonB:before {

@@ -16,15 +16,17 @@
 
 <main>
 	{#if !isAns&&!isWait}
+		<div class="toparea">
 		<a
 			href="http://abehiroshi.la.coocan.jp/"
 			target="_blank"
 			rel="noreferrer"
-			style="text-decoration:none;"
+			style="font-size:120%; text-decoration:none;"
 		>
-			<h1>大喜利伝言ゲーム</h1>
+			<h1><span style="font-size:130%; color:salmon;">大</span>喜利<span style="font-size:130%; color:cornflowerblue;">伝</span>言ゲーム</h1>
 		</a>
-		<div class="centering">
+		</div>
+		<div class="downarea">
 			<button on:click={playLocal} class="buttonLocal">1台でプレイ</button>
 			<select name="month" bind:value={turn}>
 				<option value="4">4人</option>
@@ -48,8 +50,26 @@
 		font-family: "BIZ UDPゴシック", cursive;
 		text-align: center;
 	}
-	.centering {
+
+	.toparea{
 		text-align: center;
+		position: absolute;
+  		top: 30%;
+  		left: 50%;
+  		transform: translateY(-50%) translateX(-50%);
+  		-webkit-transform: translateY(-50%) translateX(-50%);
+		width: 95%;
+	}
+
+	.downarea {
+		text-align: center;
+		vertical-align: bottom;
+		position: absolute;
+  		top: 60%;
+  		left: 50%;
+  		transform: translateY(-50%) translateX(-50%);
+  		-webkit-transform: translateY(-50%) translateX(-50%);
+		width:95%;
 	}
 	
 	.buttonLocal {
@@ -117,5 +137,6 @@
 	
     :global(body) {
 		background-color: linen;
+		font-size: 3vmin;
 	}
 </style>
