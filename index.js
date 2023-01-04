@@ -13,6 +13,8 @@ server.listen(3000, () => {
 
 var members = []
 var started = false
+var turn = 0
+var answers = []
 
 io.on('connection', (socket) => {
   console.log('a user connected');
@@ -33,6 +35,51 @@ io.on('connection', (socket) => {
       { "members": members.map((username) => { return {"username": username}; }) }
     );
   })
+
+  socket.on('start', (json) => {
+    if(!started){
+      started = true;
+      io.emit(
+        'game',
+        {
+          "answerer": members[0],
+          "turn": 0
+        }
+      );
+    }
+  });
+
+  socket.on('answer', (json) => {
+    turn = turn + 1;
+    let newAnswer = {
+      "username": json["username"],
+      "answer": json["answer"]
+    };
+    answers.push(newAnswer);
+
+    if(turn < members.length){
+      io.emit(
+        'game',
+        {
+          "answerer": members[turn],
+          "turn": turn,
+          "question": newAnswer["answer"]
+        }
+      );
+    }else{
+      io.emit(
+        'result',
+        {
+          "answers": answers
+        }
+      );
+      
+      members.splice(0);
+      started = false;
+      turn = 0;
+      answers.splice(0);
+    }
+  });
 
   // ...
 })
