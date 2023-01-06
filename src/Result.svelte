@@ -18,40 +18,36 @@
 
 <main>
 	{#if !isTitle}
+		<div class="centering">
 		<h1>結果発表</h1>
 		{#if !flg}
-			<div class="centering">
-				<button on:click={buttonFlg} class="buttonG">結果オープン</button>
-			</div>
+			<button on:click={buttonFlg} class="buttonG">結果オープン</button>
 		{:else}
-			<h2>最初の<span style="font-size:120%; font-weight: bold; color:salmon">お題</span></h2><br/>
+			<h2>最初の<span style="font-size:120%; font-weight: bold; color:salmon">お題</span></h2>
 			<div class="balloonR">
-				<h2>『{first_answer}』</h2>
+				<p>『{first_answer}』</p>
 			</div>
-			<div class="centering">
-				<details>
-					<summary>伝言過程</summary>
-					{#each middle_answers as answer,i}
-						{#if i%2==1}
-							<div class="balloonPR">
-								<p>({i+2}):『{answer}』</p>
-							</div><br/>
-						{:else}
-							<div class="balloonPB">
-								<p>({i+2}):「{answer}」</p>
-							</div><br/>
-						{/if}
-					{/each}
-				</details>
-			</div>
-			<h2>最後の<span style="font-size:120%; font-weight: bold; color:cornflowerblue">回答</span></h2><br/>
+			<details>
+				<summary>伝言過程</summary><br/>
+				{#each middle_answers as answer,i}
+					{#if i%2==1}
+						<div class="balloonPR">
+							<p>({i+2}):『{answer}』</p>
+						</div><br/>
+					{:else}
+						<div class="balloonPB">
+							<p>({i+2}):「{answer}」</p>
+						</div><br/>
+					{/if}
+				{/each}
+			</details>
+			<h2>最後の<span style="font-size:120%; font-weight: bold; color:cornflowerblue">回答</span></h2>
 			<div class="balloonB">
-				<h2>「{last_answer}」</h2>
+				<p>「{last_answer}」</p>
 			</div>
-			<div class="centering">
-				<button on:click={backTitle} class="buttonG">タイトルに戻る</button>
-			</div>
+			<button on:click={backTitle} class="buttonG">タイトルに戻る</button>
 		{/if}
+		</div>
 	{:else}
 		<Title />
 	{/if}
@@ -64,19 +60,24 @@
 	h2 {
 		text-align: center;
 	}
+
 	.centering {
 		text-align: center;
-		vertical-align: top;
+		position: absolute;
+		vertical-align: middle;
+  		left: 50%;
+  		transform: translateX(-50%);
+  		-webkit-transform: translateX(-50%);
+  		-moz-transform: translateX(-50%);
+  		-ms-transform: translateX(-50%);
+  		-o-transform: translateX(-50%);
+		width:95%;
 	}
 
 	.balloonR {
   		position: relative;
-		left: 50%;
-    	transform: translate(-50%, -50%);
-    	-webkit-transform: translate(-50%, -50%);
-    	-ms-transform: translate(-50%, -50%);
   		display: inline-block;
-  		margin: 1.5em 0;
+  		margin-bottom: 1em;
   		padding: 0.3em 1em;
   		min-width: 3em;
   		max-width: 95%;
@@ -84,6 +85,7 @@
   		background: salmon;
   		border: solid 3px salmon;
   		box-sizing: border-box;
+		overflow-wrap:break-word;
 	}
 
 	.balloonR:before {
@@ -108,19 +110,16 @@
   		z-index: 1;
 	}
 
-	.balloonR h2 {
+	.balloonR p {
   		margin: 0;
   		padding: 0;
+		font-weight: bold;
 	}
 
 	.balloonB {
   		position: relative;
-		left: 50%;
-    	transform: translate(-50%, -50%);
-    	-webkit-transform: translate(-50%, -50%);
-    	-ms-transform: translate(-50%, -50%);
   		display: inline-block;
-  		margin: 1.5em 0;
+  		margin: 0em;
   		padding: 0.3em 1em;
   		min-width: 3em;
   		max-width: 95%;
@@ -128,15 +127,15 @@
   		background: cornflowerblue;
   		border: solid 3px cornflowerblue;
   		box-sizing: border-box;
-		vertical-align: top;
+		overflow-wrap:break-word;
 	}
 
 	.balloonB:before {
   		content: "";
   		position: absolute;
   		right: -24px;
-		top: 50%;
-  		margin-top: -15px;
+		bottom: 50%;
+  		margin-bottom: -15px;
   		border: 12px solid transparent;
   		border-left: 12px solid cornflowerblue;
   		z-index: 2;
@@ -146,16 +145,17 @@
   		content: "";
   		position: absolute;
   		right: -30px;
-  		top: 50%;
-  		margin-top: -17px;
+  		bottom: 50%;
+  		margin-bottom: -17px;
   		border: 14px solid transparent;
   		border-left: 14px solid cornflowerblue;
   		z-index: 1;
 	}
 
-	.balloonB h2 {
+	.balloonB p {
   		margin: 0;
   		padding: 0;
+		font-weight: bold;
 	}
 
 	.balloonPR {
@@ -200,7 +200,7 @@
 		background-color: white;
 		display: inline-block;
 		padding: 0.3em 1em;
-		margin-bottom: 3em;
+		margin: 3em 0em;
 		text-decoration: none;
 		color: mediumseagreen;
 		border: solid 2px mediumseagreen;

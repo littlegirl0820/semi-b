@@ -13,6 +13,7 @@
 	let answer = "";
 	let turnMax = Number(localStorage.getItem("Turn"));
 	let answerStrings = [];
+	let MAX_LENGTH = 100;
 	function sendAnswer() {
 		if (answer === "") {
 			caution = true;
@@ -20,7 +21,7 @@
 			question = answer;
 			addStrings(answer);
 			answer = "";
-			caution = false;
+			caution = 0;
 			if (turn === turnMax) {
 				isResult = true;
 				localStorage.setItem("answers", JSON.stringify(answerStrings));
@@ -45,25 +46,26 @@
 		{:else}
 			<h2>以下の回答にふさわしい<span style="font-size:120%; font-weight: bold; color:salmon">大喜利のお題</span>を入力してください。</h2>
 		{/if}
+		</div>
+		<div class="middlearea">
 		{#if turn >= 2}
-			<br/>
 			{#if turn%2 == 0}
 				<div class="balloonR">
-					<h2>『{question}』</h2>
+					<p>『{question}』</p>
 				</div>
 			{:else}
 				<div class="balloonB">
-					<h2>「{question}」</h2>
+					<p>「{question}」</p>
 				</div>
 			{/if}
 		{/if}
 		</div>
 		<div class="downarea">
 			{#if turn%2 == 1}
-				<input placeholder="お題を入力" bind:value={answer} class="textb"/>
+				<input placeholder="お題を入力({MAX_LENGTH}字以内)" maxlength={MAX_LENGTH} bind:value={answer} class="textb"/>
 				<button on:click={sendAnswer} class="buttonR">決定</button>
 			{:else}
-				<input placeholder="回答を入力" bind:value={answer} class="textb"/>
+				<input placeholder="回答を入力({MAX_LENGTH}字以内)" maxlength={MAX_LENGTH} bind:value={answer} class="textb"/>
 				<button on:click={sendAnswer} class="buttonB">決定</button>
 			{/if}
 			{#if caution}
@@ -92,10 +94,27 @@
 		text-align: center;
 		position: absolute;
 		vertical-align: top;
-  		top: 40%;
+  		top: 25%;
   		left: 50%;
   		transform: translateY(-50%) translateX(-50%);
   		-webkit-transform: translateY(-50%) translateX(-50%);
+  		-moz-transform: translateY(-50%) translateX(-50%);
+  		-ms-transform: translateY(-50%) translateX(-50%);
+  		-o-transform: translateY(-50%) translateX(-50%);
+		width:95%;
+	}
+
+	.middlearea{
+		text-align: center;
+		position: absolute;
+		vertical-align: middle;
+  		top: 50%;
+  		left: 50%;
+  		transform: translateY(-50%) translateX(-50%);
+  		-webkit-transform: translateY(-50%) translateX(-50%);
+  		-moz-transform: translateY(-50%) translateX(-50%);
+  		-ms-transform: translateY(-50%) translateX(-50%);
+  		-o-transform: translateY(-50%) translateX(-50%);
 		width:95%;
 	}
 
@@ -103,20 +122,20 @@
 		text-align: center;
 		vertical-align: bottom;
 		position: absolute;
-  		top: 65%;
+  		top: 70%;
   		left: 50%;
   		transform: translateX(-50%);
   		-webkit-transform: translateX(-50%);
+  		-moz-transform: translateX(-50%);
+  		-ms-transform: translateX(-50%);
+  		-o-transform: translateX(-50%);
 		width:95%;
 	}
 
 	.balloonR {
   		position: relative;
-    	transform: translateY(-50%);
-    	-webkit-transform: translateY(-50%);
-    	-ms-transform: translateY(-50%);
   		display: inline-block;
-  		margin: 1.5em 0;
+  		margin: 0;
   		padding: 0.3em 1em;
   		min-width: 3em;
   		max-width: 95%;
@@ -149,18 +168,16 @@
   		z-index: 1;
 	}
 
-	.balloonR h2 {
+	.balloonR p {
   		margin: 0;
   		padding: 0;
+		font-size:3vmin;
 	}
 	
 	.balloonB {
   		position: relative;
-    	transform: translateY(-50%);
-    	-webkit-transform: translateY(-50%);
-    	-ms-transform: translateY(-50%);
   		display: inline-block;
-  		margin: 1.5em 0;
+  		margin: 0;
   		padding: 0.3em 1em;
   		min-width: 3em;
   		max-width: 95%;
@@ -193,14 +210,15 @@
   		z-index: 1;
 	}
 
-	.balloonB h2 {
+	.balloonB p {
   		margin: 0;
   		padding: 0;
+		font-size:3vmin;
 	}
 
 	.textb {
         height: 2.5em;
-        width: 15em;
+		width:70%;
         padding: 0.3em;
         border-radius: 0.3em;
         box-shadow: 0 0 0 1px silver inset;

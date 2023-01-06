@@ -137,6 +137,6 @@
 	
     :global(body) {
 		background-color: linen;
-		font-size: 3vmin;
+		font-size: 2.5vmin;
 	}
 </style>
