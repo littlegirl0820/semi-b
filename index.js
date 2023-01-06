@@ -24,14 +24,29 @@ io.on('connection', (socket) => {
     if (!started && !members.includes(json["username"])) {
       result = "OK";
       members.push(json["username"]);
+      socket.emit(
+        'join',
+        { "result": result }
+      );
+    }else if(started){
+      socket.emit(
+        'join',
+        { "result": result,
+          "reason": "No room is currently open." }
+      );
+    }else{
+      socket.emit(
+        'join',
+        { "result": result,
+          "reason": "Duplicate user name." }
+      );
     }
-    socket.emit(
-      { "result": result }
-    );
+
   });
 
   socket.on('members', (json) => {
     socket.emit(
+      'members',
       { "members": members.map((username) => { return {"username": username}; }) }
     );
   })
@@ -41,10 +56,8 @@ io.on('connection', (socket) => {
       started = true;
       io.emit(
         'game',
-        {
-          "answerer": members[0],
-          "turn": 0
-        }
+        { "answerer": members[0],
+          "turn": 0 }
       );
     }
   });
@@ -60,18 +73,14 @@ io.on('connection', (socket) => {
     if(turn < members.length){
       io.emit(
         'game',
-        {
-          "answerer": members[turn],
+        { "answerer": members[turn],
           "turn": turn,
-          "question": newAnswer["answer"]
-        }
+          "question": newAnswer["answer"] }
       );
     }else{
       io.emit(
         'result',
-        {
-          "answers": answers
-        }
+        { "answers": answers }
       );
       
       members.splice(0);
