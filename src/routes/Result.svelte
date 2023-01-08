@@ -1,51 +1,54 @@
-<script>
+<script lang="ts">
   import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();
 
-  export let answerStrings;
+  export let answerStrings: string[];
 
   let isResultOpened = false;
-  let firstAnswer = answerStrings[0];
-  let middleAnswers = answerStrings.slice(1, answerStrings.length - 1);
-  let lastAnswer = answerStrings[answerStrings.length - 1];
-  
+  let firstAnswer: string = answerStrings[0];
+  let middleAnswers: string[] = answerStrings.slice(1, answerStrings.length - 1);
+  let lastAnswer: string = answerStrings[answerStrings.length - 1];
+
   function backTitle() {
     dispatch('showTitle');
   }
 </script>
 
-<main>
-    <div class='centering'>
-    <h1>結果発表</h1>
-    {#if !isResultOpened}
-      <button on:click={() => isResultOpened = true} class='buttonG'>結果オープン</button>
-    {:else}
-      <h2>最初の<span style='font-size:120%; font-weight: bold; color:salmon'>お題</span></h2>
-      <div class='balloonR'>
-        <p>『{firstAnswer}』</p>
-      </div>
-      <details>
-        <summary>伝言過程</summary><br/>
-        {#each middleAnswers as answer,i}
-          {#if i%2==1}
-            <div class='balloonPR'>
-              <p>({i+2}):『{answer}』</p>
-            </div><br/>
-          {:else}
-            <div class='balloonPB'>
-              <p>({i+2}):「{answer}」</p>
-            </div><br/>
-          {/if}
-        {/each}
-      </details>
-      <h2>最後の<span style='font-size:120%; font-weight: bold; color:cornflowerblue'>回答</span></h2>
-      <div class='balloonB'>
-        <p>「{lastAnswer}」</p>
-      </div><br/>
-      <button on:click={backTitle} class='buttonG'>タイトルに戻る</button>
-    {/if}
+<div class="centering">
+  <h1>結果発表</h1>
+  {#if !isResultOpened}
+    <button on:click={() => (isResultOpened = true)} class="buttonG">結果オープン</button>
+  {:else}
+    <h2>最初の<span style="font-size:120%; font-weight: bold; color:salmon">お題</span></h2>
+    <div class="balloonR">
+      <p>『{firstAnswer}』</p>
     </div>
-</main>
+    <details>
+      <summary>伝言過程</summary><br />
+      {#each middleAnswers as answer, i}
+        {#if i % 2 == 1}
+          <div class="balloonPR">
+            <p>({i + 2}):『{answer}』</p>
+          </div>
+          <br />
+        {:else}
+          <div class="balloonPB">
+            <p>({i + 2}):「{answer}」</p>
+          </div>
+          <br />
+        {/if}
+      {/each}
+    </details>
+    <h2>
+      最後の<span style="font-size:120%; font-weight: bold; color:cornflowerblue">回答</span>
+    </h2>
+    <div class="balloonB">
+      <p>「{lastAnswer}」</p>
+    </div>
+    <br />
+    <button on:click={backTitle} class="buttonG">タイトルに戻る</button>
+  {/if}
+</div>
 
 <style>
   h1 {
@@ -66,7 +69,7 @@
     -moz-transform: translateX(-50%);
     -ms-transform: translateX(-50%);
     -o-transform: translateX(-50%);
-    width:95%;
+    width: 95%;
   }
 
   .balloonR {
@@ -80,7 +83,7 @@
     background: salmon;
     border: solid 3px salmon;
     box-sizing: border-box;
-    overflow-wrap:break-word;
+    overflow-wrap: break-word;
   }
 
   .balloonR:before {
@@ -122,7 +125,7 @@
     background: cornflowerblue;
     border: solid 3px cornflowerblue;
     box-sizing: border-box;
-    overflow-wrap:break-word;
+    overflow-wrap: break-word;
   }
 
   .balloonB:before {
@@ -191,7 +194,6 @@
 
   .buttonG {
     height: 2.5em;
-    font-family: 'BIZ UDPゴシック', cursive;
     background-color: white;
     display: inline-block;
     padding: 0.3em 1em;
