@@ -44,7 +44,7 @@
 			<h2>最後の<span style="font-size:120%; font-weight: bold; color:cornflowerblue">回答</span></h2>
 			<div class="balloonB">
 				<p>「{last_answer}」</p>
-			</div>
+			</div><br/>
 			<button on:click={backTitle} class="buttonG">タイトルに戻る</button>
 		{/if}
 		</div>
