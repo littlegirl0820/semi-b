@@ -1,30 +1,15 @@
 <script lang="ts">
-  import type { StartLocal, StartOnline, JoinResponse } from '../lib/ogiri.type';
   import { createEventDispatcher } from 'svelte';
-  import type { Socket } from 'socket.io-client';
-  import { io } from 'socket.io-client';
 
-  const dispatch = createEventDispatcher<{ startLocal: StartLocal; startOnline: StartOnline }>();
-  let isWaitingServer = false;
-  let userName = '';
+  const dispatch = createEventDispatcher<{ startLocal: number }>();
   let turns = '6';
 
   function startLocal() {
-    dispatch('startLocal', { userName, turns: Number(turns) });
+    dispatch('startLocal', Number(turns));
   }
 
   function startOnline() {
-    let socket: Socket = io(); // Opens websocket
-    socket.emit('join', { username: userName });
-    isWaitingServer = true;
-    socket.on('join', (msg: JoinResponse) => {
-      if (msg.result === 'OK') {
-        isWaitingServer = false;
-        dispatch('startOnline', { userName, turns: Number(turns), socket });
-      } else {
-        alert('参加が拒否されました: ' + (msg.reason ?? '原因不明'));
-      }
-    });
+    alert('Static 版はローカルプレイ専用です');
   }
 </script>
 
@@ -52,7 +37,7 @@
   </select>
   で遊ぶ<br />
   <button on:click={startOnline} class="buttonOnline">オンラインでプレイ</button>
-  <input placeholder="ユーザ名" bind:value={userName} class="textb" /><br />
+  <input placeholder="ユーザ名" class="textb" /><br />
 </div>
 
 <style>
