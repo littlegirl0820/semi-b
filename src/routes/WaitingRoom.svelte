@@ -1,26 +1,61 @@
 <script lang="ts">
+  import type { GameSvr, MembersSvr, StartGame } from '$lib/ogiri.type';
   import type { Socket } from 'socket.io-client';
-  import { createEventDispatcher } from 'svelte';
-  const dispatch = createEventDispatcher<{ startGame: string[] }>();
+  import { createEventDispatcher, onMount } from 'svelte';
+  const dispatch = createEventDispatcher<{ startGame: StartGame; showTitle: null }>();
 
-  export let socket: Socket;
+  export let socket: Socket | null;
 
-  let players: string[] = [];
+  let members: string[] = [];
+  let isWaitingResponse = false;
 
   function gameStart() {
-    dispatch('startGame', players);
+    isWaitingResponse = true;
+    socket?.emit('start');
   }
+
+  onMount(() => {
+    socket?.on('members', (msg: MembersSvr) => {
+      members = [];
+      for (const member of msg.members) members.push(member.username);
+      members = members; // Trigger reactivity
+    });
+
+    socket?.on('game', (msg: GameSvr) => {
+      socket?.off('members');
+      socket?.off('game');
+      dispatch('startGame', {
+        members,
+        answerer: msg.answerer,
+        turn: msg.turn,
+        question: msg.question
+      });
+      isWaitingResponse = false;
+    });
+
+    socket?.on('disconnect', (msg) => {
+      socket?.off('members');
+      socket?.off('game');
+      socket?.off('disconnect');
+      dispatch('showTitle');
+      alert('通信切断: ' + msg);
+    });
+  });
 </script>
 
 <h1>参加者一覧</h1>
-{#each players as player}
+{#each members as player}
   <div class="balloonB">
     <p>{player}</p>
   </div>
   <br />
 {/each}
 <div class="centering">
-  <button on:click={gameStart} class="buttonG">Start</button>
+  <button
+    disabled={isWaitingResponse || members.length % 2 == 1}
+    on:click={gameStart}
+    class="buttonG">{isWaitingResponse ? 'Starting...' : 'Start'}</button
+  >
 </div>
 
 <style>

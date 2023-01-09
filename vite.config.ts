@@ -1,10 +1,10 @@
-import type { UserConfig } from 'vite';
+import type { UserConfig, ViteDevServer } from 'vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import injectSocketIO from './socketIoHandler.js';
 
 const webSocket = {
   name: 'webSocketServer',
-  configureServer(server: any) {
+  configureServer(server: ViteDevServer) {
     injectSocketIO(server.httpServer);
   }
 };

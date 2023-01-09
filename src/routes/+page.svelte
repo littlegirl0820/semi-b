@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Socket } from 'socket.io-client';
-  import type { PlayMode, StartLocal, StartOnline } from '../lib/ogiri.type';
+  import type { PlayMode, StartGame, StartLocal, StartOnline } from '../lib/ogiri.type';
   import Title from './Title.svelte';
   import Answer from './Answer.svelte';
   import WaitingRoom from './WaitingRoom.svelte';
@@ -12,7 +12,8 @@
   let userName: string;
   let state: States = 'title';
   let turns: number;
-  let players: string[];
+  let members: string[];
+  let answerer: string;
   let answerStrings: string[];
   let playMode: PlayMode;
 
@@ -23,13 +24,14 @@
   }
 
   function startOnline(event: CustomEvent<StartOnline>) {
-    ({ userName, turns, socket } = event.detail);
+    ({ userName, socket } = event.detail);
     playMode = 'online';
     state = 'waitingRoom';
   }
 
-  function startGame(event: CustomEvent<string[]>) {
-    players = event.detail;
+  function startGame(event: CustomEvent<StartGame>) {
+    ({ members, answerer } = event.detail);
+    turns = members.length;
     state = 'answer';
   }
 
@@ -47,10 +49,18 @@
   {#if state === 'title'}
     <Title on:startLocal={startLocal} on:startOnline={startOnline} />
   {:else if state === 'waitingRoom'}
-    <WaitingRoom {socket} on:startGame={startGame} />
+    <WaitingRoom {socket} on:startGame={startGame} on:showTitle={showTitle} />
   {:else if state === 'answer'}
-    <Answer {socket} {turns} {userName} {playMode} on:showResult={showResult} />
+    <Answer
+      {answerer}
+      {socket}
+      {turns}
+      {userName}
+      {playMode}
+      on:showResult={showResult}
+      on:showTitle={showTitle}
+    />
   {:else}
-    <Result {answerStrings} on:showTitle={showTitle} />
+    <Result {answerStrings} on:showTitle={showTitle} on:showTitle={showTitle} />
   {/if}
 </main>

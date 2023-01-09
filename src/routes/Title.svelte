@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { StartLocal, StartOnline, JoinResponse } from '../lib/ogiri.type';
   import { createEventDispatcher } from 'svelte';
-  import type { Socket } from 'socket.io-client';
   import { io } from 'socket.io-client';
 
   const dispatch = createEventDispatcher<{ startLocal: StartLocal; startOnline: StartOnline }>();
@@ -14,15 +13,24 @@
   }
 
   function startOnline() {
-    let socket: Socket = io(); // Opens websocket
-    socket.emit('join', { username: userName });
     isWaitingServer = true;
+
+    const socket = io({ reconnection: false }); // Opens websocket
+    socket.on('connect_error', (err) => {
+      isWaitingServer = false;
+      socket.off('connect_error');
+      alert('接続失敗: ' + err.name + ': ' + err.message);
+    });
+
+    socket.emit('join', { username: userName });
+
     socket.on('join', (msg: JoinResponse) => {
+      isWaitingServer = false;
+      socket.off('join');
       if (msg.result === 'OK') {
-        isWaitingServer = false;
-        dispatch('startOnline', { userName, turns: Number(turns), socket });
+        dispatch('startOnline', { userName, socket });
       } else {
-        alert('参加が拒否されました: ' + (msg.reason ?? '原因不明'));
+        alert('参加拒否: ' + (msg.reason ?? '原因不明'));
       }
     });
   }
@@ -51,7 +59,9 @@
     <option value="10">10人</option>
   </select>
   で遊ぶ<br />
-  <button on:click={startOnline} class="buttonOnline">オンラインでプレイ</button>
+  <button disabled={isWaitingServer} on:click={startOnline} class="buttonOnline"
+    >{isWaitingServer ? '接続待機中' : 'オンラインでプレイ'}</button
+  >
   <input placeholder="ユーザ名" bind:value={userName} class="textb" /><br />
 </div>
 

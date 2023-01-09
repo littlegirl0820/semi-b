@@ -2,7 +2,6 @@ import type { Socket } from 'socket.io-client';
 
 export type StartOnline = {
   userName: string;
-  turns: number;
   socket: Socket;
 };
 
@@ -14,6 +13,27 @@ export type StartLocal = {
 export type JoinResponse = {
   result: 'OK' | 'NG';
   reason?: string;
+};
+
+export type MemberSvr = {
+  username: string;
+};
+
+export type MembersSvr = {
+  members: MemberSvr[];
+};
+
+export type GameSvr = {
+  answerer: string;
+  turn: 0;
+  question?: string;
+};
+
+export type StartGame = {
+  members: string[];
+  answerer: string;
+  turn: 0;
+  question?: string;
 };
 
 export type Answer = {

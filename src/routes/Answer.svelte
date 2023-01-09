@@ -1,14 +1,15 @@
 <script lang="ts">
   import type { Socket } from 'socket.io-client';
   import type { GameResult, PlayMode } from '../lib/ogiri.type';
-  import { createEventDispatcher } from 'svelte';
-  const dispatch = createEventDispatcher<{ showResult: string[] }>();
+  import { createEventDispatcher, onMount } from 'svelte';
+  const dispatch = createEventDispatcher<{ showResult: string[]; showTitle: null }>();
   const MAX_LENGTH = 100;
 
-  export let socket: Socket;
+  export let socket: Socket | null;
   export let turns: number;
   export let userName: string;
   export let playMode: PlayMode;
+  export let answerer: string | null;
 
   let caution = false;
   let turn = 1;
@@ -16,7 +17,7 @@
   let answer = '';
   let answerStrings: string[] = [];
   let currentPlayer = '';
-  let isWaitingResult = false;
+  let isWaitingResponse = false;
 
   function sendAnswer() {
     if (answer === '') {
@@ -28,7 +29,7 @@
       caution = false;
 
       if (turn === turns) {
-        if (playMode === 'online') isWaitingResult = true;
+        if (playMode === 'online') isWaitingResponse = true;
         else dispatch('showResult', answerStrings);
       }
 
@@ -36,14 +37,26 @@
     }
   }
 
-  if (playMode === 'online') {
-    socket.on('result', (msg: GameResult) => {
-      answerStrings = [];
-      for (const answer in msg.answers) answerStrings.push(answer);
-      socket.disconnect();
-      dispatch('showResult', answerStrings);
-    });
-  }
+  onMount(() => {
+    if (playMode === 'online') {
+      currentPlayer = answerer ?? '';
+
+      socket?.on('result', (msg: GameResult) => {
+        socket?.off('result');
+        socket?.disconnect();
+        answerStrings = [];
+        for (const answer of msg.answers) answerStrings.push(answer.answer);
+        dispatch('showResult', answerStrings);
+      });
+
+      socket?.on('disconnect', (msg) => {
+        socket?.off('result');
+        socket?.off('disconnect');
+        dispatch('showTitle');
+        alert('通信切断: ' + msg);
+      });
+    }
+  });
 </script>
 
 {#if playMode === 'local' || userName === currentPlayer}
@@ -89,7 +102,9 @@
         bind:value={answer}
         class="textb"
       />
-      <button on:click={sendAnswer} class="buttonR">決定</button>
+      <button disabled={isWaitingResponse} on:click={sendAnswer} class="buttonR"
+        >{isWaitingResponse ? '送信中' : '決定'}</button
+      >
     {:else}
       <input
         placeholder="回答を入力({MAX_LENGTH}字以内)"
@@ -97,7 +112,9 @@
         bind:value={answer}
         class="textb"
       />
-      <button on:click={sendAnswer} class="buttonB">決定</button>
+      <button disabled={isWaitingResponse} on:click={sendAnswer} class="buttonB"
+        >{isWaitingResponse ? '送信中' : '決定'}</button
+      >
     {/if}
     {#if caution}
       <h3>入力せんかいシバくぞ</h3>

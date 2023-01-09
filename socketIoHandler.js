@@ -15,6 +15,11 @@ export default function injectSocketIO(server) {
       if (!started && !members.includes(json['username']) && json['username'] !== '') {
         members.push(json['username']);
         socket.emit('join', { result: 'OK' });
+        io.emit('members', {
+          members: members.map((username) => {
+            return { username: username };
+          })
+        });
         console.log(json.username + ' joined. Current members are [' + members + '].');
       } else if (started) {
         socket.emit('join', {
@@ -37,7 +42,7 @@ export default function injectSocketIO(server) {
       }
     });
 
-    socket.on('members', (json) => {
+    socket.on('members', () => {
       socket.emit('members', {
         members: members.map((username) => {
           return { username: username };
@@ -45,7 +50,7 @@ export default function injectSocketIO(server) {
       });
     });
 
-    socket.on('start', (json) => {
+    socket.on('start', () => {
       if (!started) {
         started = true;
         io.emit('game', {
