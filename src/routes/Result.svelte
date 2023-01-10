@@ -85,7 +85,6 @@
     box-sizing: border-box;
     overflow-wrap: break-word;
   }
-
   .balloonR:before {
     content: '';
     position: absolute;
@@ -96,7 +95,6 @@
     border-right: 12px solid salmon;
     z-index: 2;
   }
-
   .balloonR:after {
     content: '';
     position: absolute;
@@ -107,7 +105,6 @@
     border-right: 14px solid salmon;
     z-index: 1;
   }
-
   .balloonR p {
     margin: 0;
     padding: 0;
@@ -127,7 +124,6 @@
     box-sizing: border-box;
     overflow-wrap: break-word;
   }
-
   .balloonB:before {
     content: '';
     position: absolute;
@@ -138,7 +134,6 @@
     border-left: 12px solid cornflowerblue;
     z-index: 2;
   }
-
   .balloonB:after {
     content: '';
     position: absolute;
@@ -149,7 +144,6 @@
     border-left: 14px solid cornflowerblue;
     z-index: 1;
   }
-
   .balloonB p {
     margin: 0;
     padding: 0;
@@ -168,7 +162,6 @@
     border: solid 3px salmon;
     box-sizing: border-box;
   }
-
   .balloonPR p {
     margin: 0;
     padding: 0;
@@ -186,7 +179,6 @@
     border: solid 3px cornflowerblue;
     box-sizing: border-box;
   }
-
   .balloonPB p {
     margin: 0;
     padding: 0;
@@ -204,7 +196,6 @@
     border-radius: 0.3em;
     transition: 0.4s;
   }
-
   .buttonG:hover {
     background: mediumseagreen;
     color: white;

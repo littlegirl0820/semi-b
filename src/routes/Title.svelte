@@ -1,15 +1,15 @@
 <script lang="ts">
-  import type { StartLocal, StartOnline, JoinResponse } from '../lib/ogiri.type';
+  import type { StartOnline, JoinResponse } from '../lib/ogiri.type';
   import { createEventDispatcher, tick } from 'svelte';
   import { io } from 'socket.io-client';
 
-  const dispatch = createEventDispatcher<{ startLocal: StartLocal; startOnline: StartOnline }>();
+  const dispatch = createEventDispatcher<{ startLocal: number; startOnline: StartOnline }>();
   let isWaitingServer = false;
   let userName = '';
   let turns = '6';
 
   function startLocal() {
-    dispatch('startLocal', { userName, turns: Number(turns) });
+    dispatch('startLocal', Number(turns));
   }
 
   function startOnline() {
@@ -162,7 +162,6 @@
     box-shadow: 0 0 0 1px silver inset;
     border: none;
   }
-
   .textb:focus {
     outline: 0;
     box-shadow: 0 0 0 2px black inset;

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Socket } from 'socket.io-client';
-  import type { PlayMode, StartGame, StartLocal, StartOnline } from '../lib/ogiri.type';
+  import type { PlayMode, StartGame, StartOnline } from '../lib/ogiri.type';
   import Title from './Title.svelte';
   import Answer from './Answer.svelte';
   import WaitingRoom from './WaitingRoom.svelte';
@@ -17,8 +17,8 @@
   let answerStrings: string[];
   let playMode: PlayMode;
 
-  function startLocal(event: CustomEvent<StartLocal>) {
-    ({ userName, turns } = event.detail);
+  function startLocal(event: CustomEvent<number>) {
+    turns = event.detail;
     playMode = 'local';
     state = 'answer';
   }

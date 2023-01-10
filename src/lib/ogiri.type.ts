@@ -5,11 +5,6 @@ export type StartOnline = {
   socket: Socket;
 };
 
-export type StartLocal = {
-  userName: string;
-  turns: number;
-};
-
 export type JoinResponse = {
   result: 'OK' | 'NG';
   reason?: string;
