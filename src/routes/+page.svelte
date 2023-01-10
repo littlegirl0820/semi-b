@@ -30,6 +30,6 @@
   {:else if state === 'answer'}
     <Answer {turns} on:showResult={showResult} />
   {:else}
-    <Result {answerStrings} on:showTitle={showTitle} />
+    <Result {answerStrings} on:showTitle={showTitle} on:showTitle={showTitle} />
   {/if}
 </main>

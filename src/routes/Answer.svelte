@@ -19,9 +19,7 @@
       answerStrings.push(answer);
       answer = '';
       caution = false;
-
       if (turn === turns) dispatch('showResult', answerStrings);
-
       ++turn;
     }
   }
@@ -154,7 +152,6 @@
     box-sizing: border-box;
     overflow-wrap: break-word;
   }
-
   .balloonR:before {
     content: '';
     position: absolute;
@@ -165,7 +162,6 @@
     border-top: 12px solid salmon;
     z-index: 2;
   }
-
   .balloonR:after {
     content: '';
     position: absolute;
@@ -176,7 +172,6 @@
     border-top: 14px solid salmon;
     z-index: 1;
   }
-
   .balloonR p {
     margin: 0;
     padding: 0;
@@ -196,7 +191,6 @@
     box-sizing: border-box;
     overflow-wrap: break-word;
   }
-
   .balloonB:before {
     content: '';
     position: absolute;
@@ -207,7 +201,6 @@
     border-top: 12px solid cornflowerblue;
     z-index: 2;
   }
-
   .balloonB:after {
     content: '';
     position: absolute;
@@ -218,7 +211,6 @@
     border-top: 14px solid cornflowerblue;
     z-index: 1;
   }
-
   .balloonB p {
     margin: 0;
     padding: 0;
@@ -233,7 +225,6 @@
     box-shadow: 0 0 0 1px silver inset;
     border: none;
   }
-
   .textb:focus {
     outline: 0;
     box-shadow: 0 0 0 2px black inset;
@@ -250,9 +241,13 @@
     border-radius: 0.3em;
     transition: 0.4s;
   }
-
   .buttonR:hover {
     background: salmon;
+    color: white;
+  }
+  .buttonR:disabled {
+    background: gray;
+    border: solid 2px grey;
     color: white;
   }
 
@@ -267,9 +262,13 @@
     border-radius: 0.3em;
     transition: 0.4s;
   }
-
   .buttonB:hover {
     background: cornflowerblue;
+    color: white;
+  }
+  .buttonB:disabled {
+    background: gray;
+    border: solid 2px grey;
     color: white;
   }
 </style>

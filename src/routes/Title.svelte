@@ -81,6 +81,11 @@
     background: salmon;
     color: white;
   }
+  .buttonLocal:disabled {
+    background: gray;
+    border: solid 2px grey;
+    color: white;
+  }
 
   .buttonOnline {
     height: 2.5em;
@@ -95,6 +100,11 @@
   }
   .buttonOnline:hover {
     background: cornflowerblue;
+    color: white;
+  }
+  .buttonOnline:disabled {
+    background: gray;
+    border: solid 2px grey;
     color: white;
   }
 
@@ -124,7 +134,6 @@
     box-shadow: 0 0 0 1px silver inset;
     border: none;
   }
-
   .textb:focus {
     outline: 0;
     box-shadow: 0 0 0 2px black inset;
