@@ -5,15 +5,18 @@ export default function injectSocketIO(server) {
   const members = [];
   const answers = [];
 
-  let started = false;
-  let turn = 0;
+  let isInGame = false;
+  let currentTurn = 0;
 
   io.on('connection', (socket) => {
-    console.log('a user connected');
-
     socket.on('join', (json) => {
-      if (!started && !members.includes(json['username']) && json['username'] !== '') {
-        members.push(json['username']);
+      if (
+        !isInGame &&
+        typeof json.username === 'string' &&
+        json.username !== '' &&
+        !members.includes(json.username)
+      ) {
+        members.push(json.username);
         socket.emit('join', { result: 'OK' });
         io.emit('members', {
           members: members.map((username) => {
@@ -21,13 +24,13 @@ export default function injectSocketIO(server) {
           })
         });
         console.log(json.username + ' joined. Current members are [' + members + '].');
-      } else if (started) {
+      } else if (isInGame) {
         socket.emit('join', {
           result: 'NG',
           reason: 'No room is currently open.'
         });
         console.log('Rejected ' + json.username + '. Current members are [' + members + '].');
-      } else if (members.includes(json['username'])) {
+      } else if (members.includes(json.username)) {
         socket.emit('join', {
           result: 'NG',
           reason: 'Duplicate user name.'
@@ -36,7 +39,7 @@ export default function injectSocketIO(server) {
       } else {
         socket.emit('join', {
           result: 'NG',
-          reason: 'User name not specified.'
+          reason: 'User name invalid or not specified.'
         });
         console.log('Rejected ' + json.username + '. Current members are [' + members + '].');
       }
@@ -51,8 +54,8 @@ export default function injectSocketIO(server) {
     });
 
     socket.on('start', () => {
-      if (!started) {
-        started = true;
+      if (!isInGame) {
+        isInGame = true;
         io.emit('game', {
           answerer: members[0],
           turn: 0
@@ -61,31 +64,29 @@ export default function injectSocketIO(server) {
     });
 
     socket.on('answer', (json) => {
-      ++turn;
+      ++currentTurn;
       const newAnswer = {
-        username: json['username'],
-        answer: json['answer']
+        username: json.username,
+        answer: json.answer
       };
       answers.push(newAnswer);
 
-      if (turn < members.length) {
+      if (currentTurn < members.length) {
         io.emit('game', {
-          answerer: members[turn],
-          turn: turn,
+          answerer: members[currentTurn],
+          turn: currentTurn,
           question: newAnswer['answer']
         });
       } else {
         io.emit('result', { answers: answers });
 
         members.splice(0);
-        started = false;
-        turn = 0;
+        isInGame = false;
+        currentTurn = 0;
         answers.splice(0);
       }
     });
 
     // ...
   });
-
-  console.log('Socket.IO injected');
 }

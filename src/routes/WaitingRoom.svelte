@@ -44,17 +44,22 @@
 </script>
 
 <h1>参加者一覧</h1>
-{#each members as player}
+{#each members as member}
   <div class="balloonB">
-    <p>{player}</p>
+    <p>{member}</p>
   </div>
   <br />
 {/each}
 <div class="centering">
   <button
-    disabled={isWaitingResponse || members.length % 2 == 1}
+    disabled={isWaitingResponse || members.length % 2 == 1 || members.length < 4}
     on:click={gameStart}
-    class="buttonG">{isWaitingResponse ? 'Starting...' : 'Start'}</button
+    class="buttonG"
+    >{isWaitingResponse
+      ? 'Starting...'
+      : members.length < 4 || members.length % 2 == 1
+      ? '4 人以上の偶数人のみ対応'
+      : 'Start'}</button
   >
 </div>
 
@@ -84,7 +89,6 @@
     box-sizing: border-box;
     text-align: center;
   }
-
   .balloonB p {
     margin: 0;
     padding: 0;
@@ -102,9 +106,13 @@
     transition: 0.4s;
     margin-bottom: 3em;
   }
-
   .buttonG:hover {
     background: mediumseagreen;
+    color: white;
+  }
+  .buttonG:disabled {
+    background: gray;
+    border: solid 2px grey;
     color: white;
   }
 </style>
