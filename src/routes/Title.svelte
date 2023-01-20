@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { StartOnline, JoinResponse } from '../lib/ogiri.type';
-  import { createEventDispatcher, tick } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
   import { io } from 'socket.io-client';
 
   const dispatch = createEventDispatcher<{ startLocal: number; startOnline: StartOnline }>();
@@ -14,7 +14,6 @@
 
   function startOnline() {
     isWaitingServer = true;
-    tick();
 
     const socket = io({ reconnection: false }); // Opens websocket
     socket.on('connect_error', (err) => {

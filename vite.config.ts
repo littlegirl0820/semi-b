@@ -5,7 +5,11 @@ import injectSocketIO from './socketIoHandler.js';
 const webSocket = {
   name: 'webSocketServer',
   configureServer(server: ViteDevServer) {
-    injectSocketIO(server.httpServer);
+    if (server.httpServer != null) {
+      injectSocketIO(server.httpServer);
+    } else {
+      console.log('server.httpServer is null');
+    }
   }
 };
 

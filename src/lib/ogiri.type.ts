@@ -3,33 +3,33 @@ import type { Socket } from 'socket.io-client';
 export type StartOnline = {
   userName: string;
   socket: Socket;
-  members: MemberSvr[];
+  members: Member[];
 };
 
 export type JoinResponse = {
   result: 'OK' | 'NG';
   reason?: string;
-  members: MemberSvr[];
+  members: Member[];
 };
 
-export type MemberSvr = {
+export type Member = {
   username: string;
 };
 
-export type MembersSvr = {
-  members: MemberSvr[];
+export type Members = {
+  members: Member[];
 };
 
-export type GameSvr = {
+export type Game = {
   answerer: string;
   turn: 0;
   question?: string;
 };
 
 export type StartGame = {
-  members: MemberSvr[];
+  members: Member[];
   answerer: string;
-  turn: 0;
+  turn: number;
   question?: string;
 };
 

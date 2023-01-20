@@ -1,13 +1,23 @@
 import { Server } from 'socket.io';
 
+/**
+ * @param {Partial<import("socket.io").ServerOptions> | import("http").Server<typeof import("http").IncomingMessage, typeof import("http").ServerResponse>} server
+ */
 export default function injectSocketIO(server) {
   const io = new Server(server);
-  const members = [];
-  const answers = [];
   const idMap = new Map();
-
   let isInGame = false;
   let currentTurn = 0;
+
+  /**
+   * @type {string[]}
+   */
+  const members = [];
+
+  /**
+   * @type {{ username: string; answer: string; }[]}
+   */
+  const answers = [];
 
   io.on('connection', (socket) => {
     socket.on('join', (json) => {
@@ -31,26 +41,21 @@ export default function injectSocketIO(server) {
             return { username: username };
           })
         });
-
-        console.log(json.username + ' joined. Current members are [' + members + '].');
       } else if (isInGame) {
         socket.emit('join', {
           result: 'NG',
           reason: 'No room is currently open.'
         });
-        console.log('Rejected ' + json.username + '. Current members are [' + members + '].');
       } else if (members.includes(json.username)) {
         socket.emit('join', {
           result: 'NG',
           reason: 'Duplicate user name.'
         });
-        console.log('Rejected ' + json.username + '. Current members are [' + members + '].');
       } else {
         socket.emit('join', {
           result: 'NG',
           reason: 'User name invalid or not specified.'
         });
-        console.log('Rejected ' + json.username + '. Current members are [' + members + '].');
       }
     });
 
@@ -84,7 +89,7 @@ export default function injectSocketIO(server) {
         io.emit('game', {
           answerer: members[currentTurn],
           turn: currentTurn + 1,
-          question: newAnswer['answer']
+          question: newAnswer.answer
         });
       } else {
         io.emit('result', { answers: answers });
@@ -122,7 +127,6 @@ export default function injectSocketIO(server) {
             return { username: username };
           })
         });
-        console.log(member + ' left. Current members are [' + members + '].');
       }
     });
   });

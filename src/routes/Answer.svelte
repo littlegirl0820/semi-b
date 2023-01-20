@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Socket } from 'socket.io-client';
-  import type { GameResult, PlayMode, GameSvr, StartGame } from '../lib/ogiri.type';
+  import type { GameResult, PlayMode, Game, StartGame } from '../lib/ogiri.type';
   import { createEventDispatcher, onMount } from 'svelte';
   const dispatch = createEventDispatcher<{
     showResult: string[];
@@ -42,7 +42,7 @@
 
   onMount(() => {
     if (playMode === 'online') {
-      socket?.on('game', (msg: GameSvr) => {
+      socket?.on('game', (msg: Game) => {
         answerer = msg.answerer;
         turn = msg.turn;
         if (msg.question != undefined) {

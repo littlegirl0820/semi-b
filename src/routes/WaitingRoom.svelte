@@ -1,32 +1,28 @@
 <script lang="ts">
-  import type { GameSvr, MembersSvr, StartGame, MemberSvr } from '$lib/ogiri.type';
+  import type { Game, Member, Members, StartGame } from '$lib/ogiri.type';
   import type { Socket } from 'socket.io-client';
   import { createEventDispatcher, onMount } from 'svelte';
   const dispatch = createEventDispatcher<{ startGame: StartGame; showTitle: null }>();
 
-  export let socket: Socket | null;
-  export let initMembers: MemberSvr[] = [];
+  export let socket: Socket;
+  export let members: Member[] = [];
 
-  let members: MemberSvr[] = [];
   let isWaitingResponse = false;
 
   function gameStart() {
     isWaitingResponse = true;
-    socket?.emit('start');
+    socket.emit('start');
   }
 
   onMount(() => {
-    members = initMembers;
-
-    socket?.on('members', (msg: MembersSvr) => {
-      members = msg.members; // Trigger reactivity
-      console.log(msg);
+    socket.on('members', (msg: Members) => {
+      members = msg.members;
     });
 
-    socket?.on('game', (msg: GameSvr) => {
-      socket?.off('members');
-      socket?.off('game');
-      socket?.off('disconnect');
+    socket.on('game', (msg: Game) => {
+      socket.off('members');
+      socket.off('game');
+      socket.off('disconnect');
       dispatch('startGame', {
         members,
         answerer: msg.answerer,
@@ -36,10 +32,10 @@
       isWaitingResponse = false;
     });
 
-    socket?.on('disconnect', (msg) => {
-      socket?.off('members');
-      socket?.off('game');
-      socket?.off('disconnect');
+    socket.on('disconnect', (msg) => {
+      socket.off('members');
+      socket.off('game');
+      socket.off('disconnect');
       dispatch('showTitle');
       alert('通信切断: ' + msg);
     });
