@@ -19,7 +19,9 @@
       answerStrings.push(answer);
       answer = '';
       caution = false;
-      if (turn === turns) dispatch('showResult', answerStrings);
+      if (turn === turns) {
+        dispatch('showResult', answerStrings);
+      }
       ++turn;
     }
   }
