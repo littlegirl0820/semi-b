@@ -29,7 +29,7 @@
       isWaitingServer = false;
       socket.off('join');
       if (msg.result === 'OK') {
-        dispatch('startOnline', { userName, socket });
+        dispatch('startOnline', { userName, socket, members: msg.members });
       } else {
         alert('参加拒否: ' + msg.reason ?? '原因不明');
       }
