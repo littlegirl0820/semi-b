@@ -3,11 +3,13 @@ import type { Socket } from 'socket.io-client';
 export type StartOnline = {
   userName: string;
   socket: Socket;
+  members: MemberSvr[];
 };
 
 export type JoinResponse = {
   result: 'OK' | 'NG';
   reason?: string;
+  members: MemberSvr[];
 };
 
 export type MemberSvr = {
@@ -25,7 +27,7 @@ export type GameSvr = {
 };
 
 export type StartGame = {
-  members: string[];
+  members: MemberSvr[];
   answerer: string;
   turn: 0;
   question?: string;

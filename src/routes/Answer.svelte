@@ -1,8 +1,12 @@
 <script lang="ts">
   import type { Socket } from 'socket.io-client';
-  import type { GameResult, PlayMode } from '../lib/ogiri.type';
+  import type { GameResult, PlayMode, GameSvr, StartGame } from '../lib/ogiri.type';
   import { createEventDispatcher, onMount } from 'svelte';
-  const dispatch = createEventDispatcher<{ showResult: string[]; showTitle: null }>();
+  const dispatch = createEventDispatcher<{
+    showResult: string[];
+    showTitle: null;
+    startGame: StartGame;
+  }>();
   const MAX_LENGTH = 100;
 
   export let socket: Socket | null;
@@ -21,32 +25,43 @@
   function sendAnswer() {
     if (answer === '') {
       caution = true;
-    } else {
+    } else if (playMode === 'local') {
       question = answer;
       answerStrings.push(answer);
       answer = '';
       caution = false;
-
       if (turn === turns) {
-        if (playMode === 'online') isWaitingResponse = true;
-        else dispatch('showResult', answerStrings);
+        dispatch('showResult', answerStrings);
       }
-
       ++turn;
+    } else {
+      socket?.emit('answer', { username: userName, answer: answer });
+      isWaitingResponse = true;
     }
   }
 
   onMount(() => {
     if (playMode === 'online') {
+      socket?.on('game', (msg: GameSvr) => {
+        answerer = msg.answerer;
+        turn = msg.turn;
+        if (msg.question != undefined) {
+          question = msg.question;
+        }
+        isWaitingResponse = false;
+      });
+
       socket?.on('result', (msg: GameResult) => {
+        socket?.off('game');
         socket?.off('result');
-        socket?.disconnect();
+        socket?.off('disconnect');
         answerStrings = [];
         for (const answer of msg.answers) answerStrings.push(answer.answer);
         dispatch('showResult', answerStrings);
       });
 
       socket?.on('disconnect', (msg) => {
+        socket?.off('game');
         socket?.off('result');
         socket?.off('disconnect');
         dispatch('showTitle');

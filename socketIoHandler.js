@@ -4,6 +4,7 @@ export default function injectSocketIO(server) {
   const io = new Server(server);
   const members = [];
   const answers = [];
+  const idMap = new Map();
 
   let isInGame = false;
   let currentTurn = 0;
@@ -17,12 +18,20 @@ export default function injectSocketIO(server) {
         !members.includes(json.username)
       ) {
         members.push(json.username);
-        socket.emit('join', { result: 'OK' });
+        idMap.set(socket.id, json.username);
+        socket.emit('join', {
+          result: 'OK',
+          members: members.map((username) => {
+            return { username: username };
+          })
+        });
+
         io.emit('members', {
           members: members.map((username) => {
             return { username: username };
           })
         });
+
         console.log(json.username + ' joined. Current members are [' + members + '].');
       } else if (isInGame) {
         socket.emit('join', {
@@ -46,7 +55,7 @@ export default function injectSocketIO(server) {
     });
 
     socket.on('members', () => {
-      socket.emit('members', {
+      io.emit('members', {
         members: members.map((username) => {
           return { username: username };
         })
@@ -58,7 +67,7 @@ export default function injectSocketIO(server) {
         isInGame = true;
         io.emit('game', {
           answerer: members[0],
-          turn: 0
+          turn: currentTurn + 1
         });
       }
     });
@@ -74,19 +83,47 @@ export default function injectSocketIO(server) {
       if (currentTurn < members.length) {
         io.emit('game', {
           answerer: members[currentTurn],
-          turn: currentTurn,
+          turn: currentTurn + 1,
           question: newAnswer['answer']
         });
       } else {
         io.emit('result', { answers: answers });
 
+        // disconnect
+        io.disconnectSockets();
+
         members.splice(0);
         isInGame = false;
         currentTurn = 0;
         answers.splice(0);
+        idMap.clear();
       }
     });
 
-    // ...
+    socket.on('disconnect', () => {
+      if (isInGame) {
+        io.emit('error', {
+          reason: 'User ' + idMap.get(socket.id) + ' disconnect.'
+        });
+
+        io.disconnectSockets();
+
+        members.splice(0);
+        isInGame = false;
+        currentTurn = 0;
+        answers.splice(0);
+        idMap.clear();
+      } else {
+        let member = idMap.get(socket.id);
+        members.splice(members.indexOf(member), 1);
+        idMap.delete(socket.id);
+        io.emit('members', {
+          members: members.map((username) => {
+            return { username: username };
+          })
+        });
+        console.log(member + ' left. Current members are [' + members + '].');
+      }
+    });
   });
 }

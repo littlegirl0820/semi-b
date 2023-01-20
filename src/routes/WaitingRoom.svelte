@@ -1,12 +1,13 @@
 <script lang="ts">
-  import type { GameSvr, MembersSvr, StartGame } from '$lib/ogiri.type';
+  import type { GameSvr, MembersSvr, StartGame, MemberSvr } from '$lib/ogiri.type';
   import type { Socket } from 'socket.io-client';
   import { createEventDispatcher, onMount } from 'svelte';
   const dispatch = createEventDispatcher<{ startGame: StartGame; showTitle: null }>();
 
   export let socket: Socket | null;
+  export let initMembers: MemberSvr[] = [];
 
-  let members: string[] = [];
+  let members: MemberSvr[] = [];
   let isWaitingResponse = false;
 
   function gameStart() {
@@ -15,15 +16,17 @@
   }
 
   onMount(() => {
+    members = initMembers;
+
     socket?.on('members', (msg: MembersSvr) => {
-      members = [];
-      for (const member of msg.members) members.push(member.username);
-      members = members; // Trigger reactivity
+      members = msg.members; // Trigger reactivity
+      console.log(msg);
     });
 
     socket?.on('game', (msg: GameSvr) => {
       socket?.off('members');
       socket?.off('game');
+      socket?.off('disconnect');
       dispatch('startGame', {
         members,
         answerer: msg.answerer,
@@ -46,7 +49,7 @@
 <h1>参加者一覧</h1>
 {#each members as member}
   <div class="balloonB">
-    <p>{member}</p>
+    <p>{member.username}</p>
   </div>
   <br />
 {/each}
