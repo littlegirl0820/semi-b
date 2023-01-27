@@ -310,7 +310,7 @@
     }
     .textb:focus {
       outline: 0;
-      box-shadow: 0 0 0 2px black inset;
+      box-shadow: 0 0 0 2px white inset;
     }
 
     .buttonR {

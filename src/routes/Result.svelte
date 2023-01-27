@@ -157,7 +157,7 @@
     padding: 0.3em 1em;
     min-width: 3em;
     max-width: 90%;
-    color: black;
+    color: white;
     background: salmon;
     border: solid 3px salmon;
     box-sizing: border-box;
