@@ -148,7 +148,7 @@
     padding: 0.3em 1em;
     min-width: 3em;
     max-width: 95%;
-    color: black;
+    color: white;
     background: salmon;
     border: solid 3px salmon;
     box-sizing: border-box;
@@ -229,7 +229,7 @@
   }
   .textb:focus {
     outline: 0;
-    box-shadow: 0 0 0 2px black inset;
+    box-shadow: 0 0 0 2px white inset;
   }
 
   .buttonR {
