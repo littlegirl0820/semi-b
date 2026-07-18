@@ -61,6 +61,6 @@
       on:showTitle={showTitle}
     />
   {:else}
-    <Result {answerStrings} on:showTitle={showTitle} on:showTitle={showTitle} />
+    <Result {answerStrings} on:showTitle={showTitle} />
   {/if}
 </main>
