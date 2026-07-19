@@ -1,18 +1,19 @@
 <script lang="ts">
-  import type { StartOnline, JoinResponse } from '../lib/ogiri.type';
-  import { createEventDispatcher } from 'svelte';
+  import type { Socket } from 'socket.io-client';
+  import type { Member, JoinResponse } from '../lib/ogiri.type';
   import { io } from 'socket.io-client';
 
-  const dispatch = createEventDispatcher<{ startLocal: number; startOnline: StartOnline }>();
-  let isWaitingServer = false;
-  let userName = '';
-  let turns = '6';
-
-  function startLocal() {
-    dispatch('startLocal', Number(turns));
+  interface Props {
+    startLocal: (_turns: number) => void;
+    startOnline: (_userName: string, _socket: Socket, _members: Member[]) => void;
   }
+  let { startLocal, startOnline }: Props = $props();
 
-  function startOnline() {
+  let isWaitingServer = $state(false);
+  let userName = $state('');
+  let turns = $state('6');
+
+  function prepare_socket() {
     isWaitingServer = true;
 
     const socket = io({ reconnection: false }); // Opens websocket
@@ -28,9 +29,9 @@
       isWaitingServer = false;
       socket.off('join');
       if (msg.result === 'OK') {
-        dispatch('startOnline', { userName, socket, members: msg.members });
+        startOnline(userName, socket, msg.members);
       } else {
-        alert('参加拒否: ' + msg.reason ?? '原因不明');
+        alert('参加拒否: ' + (msg.reason ?? '原因不明'));
       }
     });
   }
@@ -51,7 +52,7 @@
   </a>
 </div>
 <div class="downarea">
-  <button disabled={isWaitingServer} on:click={startLocal} class="buttonLocal"
+  <button disabled={isWaitingServer} onclick={() => startLocal(Number(turns))} class="buttonLocal"
     >{isWaitingServer ? '開始中' : '1台でプレイ'}</button
   >
   <select name="month" bind:value={turns}>
@@ -61,7 +62,7 @@
     <option value="10">10人</option>
   </select>
   で遊ぶ<br />
-  <button disabled={isWaitingServer} on:click={startOnline} class="buttonOnline"
+  <button disabled={isWaitingServer} onclick={() => prepare_socket()} class="buttonOnline"
     >{isWaitingServer ? '開始中' : 'オンラインでプレイ'}</button
   >
   <input placeholder="ユーザ名" bind:value={userName} class="textb" /><br />

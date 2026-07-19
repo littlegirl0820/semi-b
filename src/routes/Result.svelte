@@ -1,31 +1,25 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  const dispatch = createEventDispatcher();
-
-  export let answerStrings: string[];
-
-  let isResultOpened = false;
-  let firstAnswer: string = answerStrings[0];
-  let middleAnswers: string[] = answerStrings.slice(1, answerStrings.length - 1);
-  let lastAnswer: string = answerStrings[answerStrings.length - 1];
-
-  function backTitle() {
-    dispatch('showTitle');
+  interface Props {
+    answerStrings: string[];
+    showTitle: () => void;
   }
+  let { answerStrings, showTitle }: Props = $props();
+
+  let isResultOpened = $state(false);
 </script>
 
 <div class="centering">
   <h1>結果発表</h1>
   {#if !isResultOpened}
-    <button on:click={() => (isResultOpened = true)} class="buttonG">結果オープン</button>
+    <button onclick={() => (isResultOpened = true)} class="buttonG">結果オープン</button>
   {:else}
     <h2>最初の<span style="font-size:120%; font-weight: bold; color:salmon">お題</span></h2>
     <div class="balloonR">
-      <p>『{firstAnswer}』</p>
+      <p>『{answerStrings[0]}』</p>
     </div>
     <details>
       <summary>伝言過程</summary><br />
-      {#each middleAnswers as answer, i}
+      {#each answerStrings.slice(1, answerStrings.length - 1) as answer, i (answer)}
         {#if i % 2 == 1}
           <div class="balloonPR">
             <p>({i + 2}):『{answer}』</p>
@@ -43,10 +37,10 @@
       最後の<span style="font-size:120%; font-weight: bold; color:cornflowerblue">回答</span>
     </h2>
     <div class="balloonB">
-      <p>「{lastAnswer}」</p>
+      <p>「{answerStrings[answerStrings.length - 1]}」</p>
     </div>
     <br />
-    <button on:click={backTitle} class="buttonG">タイトルに戻る</button>
+    <button onclick={showTitle} class="buttonG">タイトルに戻る</button>
   {/if}
 </div>
 

@@ -1,18 +1,17 @@
 <script lang="ts">
-  import type { Game, Member, Members, StartGame } from '$lib/ogiri.type';
+  import type { Game, Member, Members } from '$lib/ogiri.type';
   import type { Socket } from 'socket.io-client';
-  import { createEventDispatcher, onMount } from 'svelte';
-  const dispatch = createEventDispatcher<{ startGame: StartGame; showTitle: null }>();
+  import { onMount } from 'svelte';
 
-  export let socket: Socket;
-  export let members: Member[] = [];
-
-  let isWaitingResponse = false;
-
-  function gameStart() {
-    isWaitingResponse = true;
-    socket.emit('start');
+  interface Props {
+    socket: Socket;
+    members?: Member[];
+    startGame: (_members: Member[], _answerer: string) => void;
+    showTitle: () => void;
   }
+  let { socket, members = $bindable([]), startGame, showTitle }: Props = $props();
+
+  let isWaitingResponse = $state(false);
 
   onMount(() => {
     socket.on('members', (msg: Members) => {
@@ -23,12 +22,7 @@
       socket.off('members');
       socket.off('game');
       socket.off('disconnect');
-      dispatch('startGame', {
-        members,
-        answerer: msg.answerer,
-        turn: msg.turn,
-        question: msg.question
-      });
+      startGame(members, msg.answerer);
       isWaitingResponse = false;
     });
 
@@ -36,14 +30,14 @@
       socket.off('members');
       socket.off('game');
       socket.off('disconnect');
-      dispatch('showTitle');
+      showTitle();
       alert('通信切断: ' + msg);
     });
   });
 </script>
 
 <h1>参加者一覧</h1>
-{#each members as member}
+{#each members as member (member.username)}
   <div class="balloonB">
     <p>{member.username}</p>
   </div>
@@ -52,13 +46,16 @@
 <div class="centering">
   <button
     disabled={isWaitingResponse || members.length % 2 == 1 || members.length < 4}
-    on:click={gameStart}
+    onclick={() => {
+      isWaitingResponse = true;
+      socket.emit('start');
+    }}
     class="buttonG"
     >{isWaitingResponse
       ? 'Starting...'
       : members.length < 4 || members.length % 2 == 1
-      ? '4 人以上の偶数人のみ対応'
-      : 'Start'}</button
+        ? '4 人以上の偶数人のみ対応'
+        : 'Start'}</button
   >
 </div>
 
