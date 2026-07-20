@@ -1,26 +1,34 @@
 <script lang="ts">
   import type { Socket } from 'socket.io-client';
-  import type { GameResult, PlayMode, Game, StartGame } from '../lib/ogiri.type';
-  import { createEventDispatcher, onMount } from 'svelte';
-  const dispatch = createEventDispatcher<{
-    showResult: string[];
-    showTitle: null;
-    startGame: StartGame;
-  }>();
+  import type { GameResult, PlayMode, Game } from '../lib/ogiri.type';
+  import { onMount } from 'svelte';
   const MAX_LENGTH = 100;
 
-  export let socket: Socket | null;
-  export let turns: number;
-  export let userName: string;
-  export let playMode: PlayMode;
-  export let answerer = '';
+  interface Props {
+    socket: Socket | null;
+    turns: number;
+    userName: string;
+    playMode: PlayMode;
+    answerer?: string;
+    showResult: (_answerStrings: string[]) => void;
+    showTitle: () => void;
+  }
+  let {
+    socket,
+    turns,
+    userName,
+    playMode,
+    answerer = $bindable(''),
+    showResult,
+    showTitle
+  }: Props = $props();
 
-  let caution = false;
-  let turn = 1;
-  let question = '';
-  let answer = '';
+  let caution = $state(false);
+  let turn = $state(1);
+  let question = $state('');
+  let answer = $state('');
   let answerStrings: string[] = [];
-  let isWaitingResponse = false;
+  let isWaitingResponse = $state(false);
 
   function sendAnswer() {
     if (answer === '') {
@@ -30,9 +38,7 @@
       answerStrings.push(answer);
       answer = '';
       caution = false;
-      if (turn === turns) {
-        dispatch('showResult', answerStrings);
-      }
+      if (turn === turns) showResult(answerStrings);
       ++turn;
     } else {
       socket?.emit('answer', { username: userName, answer: answer });
@@ -45,9 +51,7 @@
       socket?.on('game', (msg: Game) => {
         answerer = msg.answerer;
         turn = msg.turn;
-        if (msg.question != undefined) {
-          question = msg.question;
-        }
+        if (msg.question != undefined) question = msg.question;
         isWaitingResponse = false;
       });
 
@@ -57,14 +61,14 @@
         socket?.off('disconnect');
         answerStrings = [];
         for (const answer of msg.answers) answerStrings.push(answer.answer);
-        dispatch('showResult', answerStrings);
+        showResult(answerStrings);
       });
 
       socket?.on('disconnect', (msg) => {
         socket?.off('game');
         socket?.off('result');
         socket?.off('disconnect');
-        dispatch('showTitle');
+        showTitle();
         alert('通信切断: ' + msg);
       });
     }
@@ -114,7 +118,7 @@
         bind:value={answer}
         class="textb"
       />
-      <button disabled={isWaitingResponse} on:click={sendAnswer} class="buttonR"
+      <button disabled={isWaitingResponse} onclick={sendAnswer} class="buttonR"
         >{isWaitingResponse ? '送信中' : '決定'}</button
       >
     {:else}
@@ -124,12 +128,12 @@
         bind:value={answer}
         class="textb"
       />
-      <button disabled={isWaitingResponse} on:click={sendAnswer} class="buttonB"
+      <button disabled={isWaitingResponse} onclick={sendAnswer} class="buttonB"
         >{isWaitingResponse ? '送信中' : '決定'}</button
       >
     {/if}
     {#if caution}
-      <h3>入力せんかいシバくぞ</h3>
+      <h3>入力は必須です。</h3>
     {/if}
   </div>
 {:else if turn % 2 === 1}
@@ -139,12 +143,12 @@
   </div>
   <div class="downarea">
     <div class="wrapper">
-      <div class="circle" />
-      <div class="circle" />
-      <div class="circle" />
-      <div class="shadow" />
-      <div class="shadow" />
-      <div class="shadow" />
+      <div class="circle"></div>
+      <div class="circle"></div>
+      <div class="circle"></div>
+      <div class="shadow"></div>
+      <div class="shadow"></div>
+      <div class="shadow"></div>
     </div>
   </div>
 {:else}
@@ -154,12 +158,12 @@
   </div>
   <div class="downarea">
     <div class="wrapper">
-      <div class="circle2" />
-      <div class="circle2" />
-      <div class="circle2" />
-      <div class="shadow" />
-      <div class="shadow" />
-      <div class="shadow" />
+      <div class="circle2"></div>
+      <div class="circle2"></div>
+      <div class="circle2"></div>
+      <div class="shadow"></div>
+      <div class="shadow"></div>
+      <div class="shadow"></div>
     </div>
   </div>
 {/if}

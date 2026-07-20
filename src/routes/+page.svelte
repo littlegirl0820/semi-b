@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Socket } from 'socket.io-client';
-  import type { PlayMode, StartGame, StartOnline, Member } from '../lib/ogiri.type';
+  import type { PlayMode, Member } from '../lib/ogiri.type';
   import Title from './Title.svelte';
   import Answer from './Answer.svelte';
   import WaitingRoom from './WaitingRoom.svelte';
@@ -8,59 +8,54 @@
 
   type States = 'title' | 'waitingRoom' | 'answer' | 'result';
 
-  let socket: Socket;
-  let userName: string;
-  let state: States = 'title';
-  let turns: number;
-  let members: Member[];
-  let answerer: string;
-  let answerStrings: string[];
-  let playMode: PlayMode;
+  let socket: Socket | undefined = $state.raw();
+  let userName: string = $state('');
+  let game_state: States = $state('title');
+  let turns: number = $state(0);
+  let members: Member[] = $state([{ username: '' }]);
+  let answerer: string = $state('');
+  let answerStrings: string[] = $state(['']);
+  let playMode: PlayMode = $state('local');
 
-  function startLocal(event: CustomEvent<number>) {
-    turns = event.detail;
+  function startLocal(_turns: number) {
+    turns = _turns;
     playMode = 'local';
-    state = 'answer';
+    game_state = 'answer';
   }
 
-  function startOnline(event: CustomEvent<StartOnline>) {
-    ({ userName, socket, members } = event.detail);
+  function startOnline(_userName: string, _socket: Socket, _members: Member[]) {
+    userName = _userName;
+    socket = _socket;
+    members = _members;
     playMode = 'online';
-    state = 'waitingRoom';
+    game_state = 'waitingRoom';
   }
 
-  function startGame(event: CustomEvent<StartGame>) {
-    ({ members, answerer } = event.detail);
+  function startGame(_members: Member[], _answerer: string) {
+    members = _members;
+    answerer = _answerer;
     turns = members.length;
-    state = 'answer';
+    game_state = 'answer';
   }
 
-  function showResult(event: CustomEvent<string[]>) {
-    answerStrings = event.detail;
-    state = 'result';
+  function showResult(_answerStrings: string[]) {
+    answerStrings = _answerStrings;
+    game_state = 'result';
   }
 
   function showTitle() {
-    state = 'title';
+    game_state = 'title';
   }
 </script>
 
 <main>
-  {#if state === 'title'}
-    <Title on:startLocal={startLocal} on:startOnline={startOnline} />
-  {:else if state === 'waitingRoom'}
-    <WaitingRoom {socket} {members} on:startGame={startGame} on:showTitle={showTitle} />
-  {:else if state === 'answer'}
-    <Answer
-      {answerer}
-      {socket}
-      {turns}
-      {userName}
-      {playMode}
-      on:showResult={showResult}
-      on:showTitle={showTitle}
-    />
+  {#if game_state === 'title'}
+    <Title {startLocal} {startOnline} />
+  {:else if game_state === 'waitingRoom'}
+    <WaitingRoom socket={socket!} {members} {startGame} {showTitle} />
+  {:else if game_state === 'answer'}
+    <Answer {answerer} socket={socket!} {turns} {userName} {playMode} {showResult} {showTitle} />
   {:else}
-    <Result {answerStrings} on:showTitle={showTitle} on:showTitle={showTitle} />
+    <Result {answerStrings} {showTitle} />
   {/if}
 </main>
