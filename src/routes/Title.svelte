@@ -1,16 +1,10 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-
-  const dispatch = createEventDispatcher<{ startLocal: number }>();
-  let turns = '6';
-
-  function startLocal() {
-    dispatch('startLocal', Number(turns));
+  interface Props {
+    startLocal: (_turns: number) => void;
   }
+  let { startLocal }: Props = $props();
 
-  function startOnline() {
-    alert('Static 版はローカルプレイ専用です');
-  }
+  let turns = $state('6');
 </script>
 
 <div class="toparea">
@@ -28,7 +22,7 @@
   </a>
 </div>
 <div class="downarea">
-  <button on:click={startLocal} class="buttonLocal">1台でプレイ</button>
+  <button onclick={() => startLocal(Number(turns))} class="buttonLocal">1台でプレイ</button>
   <select name="month" bind:value={turns}>
     <option value="4">4人</option>
     <option value="6">6人</option>
@@ -36,7 +30,9 @@
     <option value="10">10人</option>
   </select>
   で遊ぶ<br />
-  <button on:click={startOnline} class="buttonOnline">オンラインでプレイ</button>
+  <button onclick={() => alert('Static 版はローカルプレイ専用です')} class="buttonOnline"
+    >オンラインでプレイ</button
+  >
   <input placeholder="ユーザ名" class="textb" /><br />
 </div>
 

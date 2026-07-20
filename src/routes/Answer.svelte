@@ -1,14 +1,16 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  const dispatch = createEventDispatcher<{ showResult: string[] }>();
   const MAX_LENGTH = 100;
 
-  export let turns: number;
+  interface Props {
+    turns: number;
+    showResult: (_answerStrings: string[]) => void;
+  }
+  let { turns, showResult }: Props = $props();
 
-  let caution = false;
-  let turn = 1;
-  let question = '';
-  let answer = '';
+  let caution = $state(false);
+  let turn = $state(1);
+  let question = $state('');
+  let answer = $state('');
   let answerStrings: string[] = [];
 
   function sendAnswer() {
@@ -19,9 +21,7 @@
       answerStrings.push(answer);
       answer = '';
       caution = false;
-      if (turn === turns) {
-        dispatch('showResult', answerStrings);
-      }
+      if (turn === turns) showResult(answerStrings);
       ++turn;
     }
   }
@@ -69,7 +69,7 @@
       bind:value={answer}
       class="textb"
     />
-    <button on:click={sendAnswer} class="buttonR">決定</button>
+    <button onclick={sendAnswer} class="buttonR">決定</button>
   {:else}
     <input
       placeholder="回答を入力({MAX_LENGTH}字以内)"
@@ -77,10 +77,10 @@
       bind:value={answer}
       class="textb"
     />
-    <button on:click={sendAnswer} class="buttonB">決定</button>
+    <button onclick={sendAnswer} class="buttonB">決定</button>
   {/if}
   {#if caution}
-    <h3>入力せんかいシバくぞ</h3>
+    <h3>入力は必須です。</h3>
   {/if}
 </div>
 

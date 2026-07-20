@@ -5,31 +5,31 @@
 
   type States = 'title' | 'answer' | 'result';
 
-  let state: States = 'title';
-  let turns: number;
-  let answerStrings: string[];
+  let game_state: States = $state('title');
+  let turns: number = $state(0);
+  let answerStrings: string[] = $state(['']);
 
-  function startLocal(event: CustomEvent<number>) {
-    turns = event.detail;
-    state = 'answer';
+  function startLocal(_turns: number) {
+    turns = _turns;
+    game_state = 'answer';
   }
 
-  function showResult(event: CustomEvent<string[]>) {
-    answerStrings = event.detail;
-    state = 'result';
+  function showResult(_answerStrings: string[]) {
+    answerStrings = _answerStrings;
+    game_state = 'result';
   }
 
   function showTitle() {
-    state = 'title';
+    game_state = 'title';
   }
 </script>
 
 <main>
-  {#if state === 'title'}
-    <Title on:startLocal={startLocal} />
-  {:else if state === 'answer'}
-    <Answer {turns} on:showResult={showResult} />
+  {#if game_state === 'title'}
+    <Title {startLocal} />
+  {:else if game_state === 'answer'}
+    <Answer {turns} {showResult} />
   {:else}
-    <Result {answerStrings} on:showTitle={showTitle} on:showTitle={showTitle} />
+    <Result {answerStrings} {showTitle} />
   {/if}
 </main>
