@@ -21,7 +21,7 @@
 
 ## ビルド
 
-[Node.js](https://nodejs.org/ja/) が必要です。開発段階では 18.13.0 LTS と 19.4.0 が最新で、どちらでも動作しています。また、本格的に開発を行う場合は [Svelte の環境構築](https://svelte.jp/docs)も推奨します。
+[Node.js](https://nodejs.org/ja/) が必要です（開発時点では v24 LTS を使用）。また、本格的に開発を行う場合は [Svelte の環境構築](https://svelte.jp/docs)も推奨します。
 
 ```bash
 git clone https://github.com/littlegirl0820/semi-b.git
